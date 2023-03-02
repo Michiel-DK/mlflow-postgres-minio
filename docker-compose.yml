@@ -2,10 +2,15 @@ version: "3"
 
 services:
   postgres:
-    image: postgres:latest
-    environment:
-      - "POSTGRES_USER=mlflow"
-      - "POSTGRES_PASSWORD=mlflow_pass"
+    build:
+        # seperate docker file for postgres
+        dockerfile: Dockerfile_postgres
+    #image: cycling_postgres --> to change later but need to update path
+    env_file:
+      - .env
+    # environment:
+    #   - "POSTGRES_USER=mlflow"
+    #   - "POSTGRES_PASSWORD=mlflow_pass"
     ports:
       - "5532:5432"
     volumes: 
@@ -16,9 +21,11 @@ services:
     ports:
      - "9900:9000"
      - "9100:9001"
-    environment:
-      - "MINIO_ROOT_USER=minioadmin"
-      - "MINIO_ROOT_PASSWORD=minioadmin"
+    env_file:
+      - .env
+    # environment:
+    #   - "MINIO_ROOT_USER=minioadmin"
+    #   - "MINIO_ROOT_PASSWORD=minioadmin"
     volumes: 
       - minio_data:/data
     command: minio server /data --console-address ":9001" 
@@ -26,15 +33,18 @@ services:
   mlflow:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_mlflow
+    image: cycling_mlflow
     ports:
       - "5050:5000"
-    environment:
-      - "BACKEND_URI=postgresql://mlflow:mlflow_pass@postgres:5432"
-      - "MLFLOW_S3_ENDPOINT_URL=http://minio:9000"
-      - "ARTIFACT_ROOT=s3://mlflow-artifacts/"
-      - "AWS_ACCESS_KEY_ID=mlflow_access_key"
-      - "AWS_SECRET_ACCESS_KEY=mlflow_secret_key"
+    env_file:
+      - .env
+    # environment:
+    #   - "BACKEND_URI=postgresql://mlflow:mlflow_pass@postgres:5432"
+    #   - "MLFLOW_S3_ENDPOINT_URL=http://minio:9000"
+    #   - "ARTIFACT_ROOT=s3://mlflow-artifacts/"
+    #   - "AWS_ACCESS_KEY_ID=mlflow_access_key"
+    #   - "AWS_SECRET_ACCESS_KEY=mlflow_secret_key"
     depends_on:
       - postgres
       - minio
