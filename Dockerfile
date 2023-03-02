@@ -1,0 +1,16 @@
+FROM python:3.10.6-slim
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt requirements.txt
+
+RUN pip install --upgrade pip
+RUN apt update -y && apt install -y build-essential libpq-dev \
+&& pip install psycopg2-binary --no-binary psycopg2-binary \
+&& pip install --upgrade pip \
+&& pip install -r requirements.txt
+
+CMD mlflow server \
+  --backend-store-uri ${BACKEND_URI} \
+  --default-artifact-root ${ARTIFACT_ROOT} \
+  --host 0.0.0.0
