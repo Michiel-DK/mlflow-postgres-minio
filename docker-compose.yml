@@ -33,6 +33,10 @@ services:
       - "5050:5000"
     env_file:
       - .env
+    environment:
+      - "AWS_ACCES_KEY_ID=minioadmin"
+      - "AWS_SECRET_ACCES_KEY=minioadmin"
+      - MLFLOW_S3_ENDPOINT_URL='http://localhost:9001'
     depends_on:
       - postgres
       - minio
