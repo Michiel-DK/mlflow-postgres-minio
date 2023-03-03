@@ -20,9 +20,9 @@ MLFLOW_TRACKING_URI = os.getenv('MLFLOW_TRACKING_URI')
 
 if __name__ == "__main__":
     # os.environ['MLFLOW_TRACKING_URI'] = 'postgresql+psycopg2://postgres:postgres@localhost/mlflow_db'
-    # os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'http://192.168.1.179:9001'
-    # os.environ['AWS_ACCESS_KEY_ID'] = 'minioadmin'
-    # os.environ['AWS_SECRET_ACCESS_KEY'] = 'minioadmin'
+    os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'http://0.0.0.0:9100'
+    os.environ['AWS_ACCESS_KEY_ID'] = 'minioadmin'
+    os.environ['AWS_SECRET_ACCESS_KEY'] = 'minioadmin'
     try:
         np.random.seed(40)
 
@@ -64,9 +64,8 @@ if __name__ == "__main__":
             mlflow.log_metric("mse", mse)
             mlflow.log_param("layers", len(model.layers))
             #mlflow.log_artifact("output.txt")
-            mlflow.keras.log_model(keras_model=model,
+            mlflow.tensorflow.log_model(model=model,
                                         artifact_path="model",
-                                        keras_module="tensorflow.keras",
                                         registered_model_name='test_model')
     except:
         import ipdb, traceback, sys

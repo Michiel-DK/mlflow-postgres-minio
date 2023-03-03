@@ -22,7 +22,7 @@ services:
       - .env
     volumes: 
       - minio_data:/data
-    command: minio server /data --console-address ":9001" 
+    command: minio server /data --console-address ":9000" --address ':9001'
 
   mlflow:
     build:
