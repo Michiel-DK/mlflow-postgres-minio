@@ -20,7 +20,7 @@ MLFLOW_TRACKING_URI = os.getenv('MLFLOW_TRACKING_URI')
 
 if __name__ == "__main__":
     # os.environ['MLFLOW_TRACKING_URI'] = 'postgresql+psycopg2://postgres:postgres@localhost/mlflow_db'
-    os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'http://0.0.0.0:9100'
+    os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'http://127.0.0.1:9100'
     os.environ['AWS_ACCESS_KEY_ID'] = 'minioadmin'
     os.environ['AWS_SECRET_ACCESS_KEY'] = 'minioadmin'
     try:
