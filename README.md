@@ -1,23 +1,33 @@
-# MLflow tracking server с нормальными хранилищами  
+# Example structure for minio/docker/mlflow
 
-> Вдохновлено [этим](https://github.com/9dogs/mlflow-minio-test)
+### setup_mlflowdb.sql
+.sql script that runs while building postgres container.
+- creates ***mlflow_db***
+- creates user: ***mlflow_user*** with password: ***mlflow_user_pw***
+- grants all priveleges on the database with that user
 
-**Ссылочки:**
-- [MinIO docs](https://docs.min.io/)
-- [MLflow docs](https://mlflow.org/docs/latest/index.html)
-- [PostgreSQL on DockerHub](https://hub.docker.com/_/postgres)
+### Dockerfile_postgres
+Gets a **postgres alpine** image and runs the .sql script
 
-**Что делаем:**
-1. `docker-compose up -d`  
-2. на MinIO создать bucket с именем `mlflow-artifacts`. Можно в браузере, на [127.0.0.1:9000](http://127.0.0.1:9000) (один раз нужно, дальше сохранится в volume)  
-3. при обращении к MLflow из питона нужно определять переменные среды:  
-    * MLFLOW_S3_ENDPOINT_URL=http://127.0.0.1:9000  
-    * ARTIFACT_ROOT=s3://mlflow-artifacts/  
-    * AWS_ACCESS_KEY_ID=mlflow_access_key  
-    * AWS_SECRET_ACCESS_KEY=mlflow_secret_key  
+### Dockerfile_mlflow
+Installs **mlflow 2.1.1** in a python image and runs the mlflow server
 
-> _Шаг 3 нужен потому, что клиент напрямую в MinIO долбится. А MLflow-сервер туда смотрит только потом, для отображения всякого_
+### docker-compose.yml
+Creates the different services:
+- **postgres**:
+    - mapped to 5532 for outside use
+    - uses Dockerfile_postgres to build image
+- **minio**:
+    - maps console port 9000 -> 9900 for outside use
+    - maps API port 9001 -> 9100 for outside use
+    - runs Minio server on 9000/9001 inside container
+- **mlflow**:
+    - maps server port 5000 -> 5050 for outside use
+    - uses Dockerfile_mlflow to build
+    - uses AWS credentials to connect ot minio
 
-**Получаем:**
-* [MinIO](http://127.0.0.1:9000)  
-* [MLflow](http://127.0.0.1:5000)  
+### test_trainer.py
+Simple tensorfow model to test logging on mlflow and minio
+
+### still to do
+- script to create S3 bucket in minio for startup --> for now create manually before running a training
