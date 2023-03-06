@@ -64,7 +64,7 @@ if __name__ == "__main__":
             mlflow.log_metric("mse", mse)
             mlflow.log_param("layers", len(model.layers))
             #mlflow.log_artifact("output.txt")
-            mlflow.tensorflow.log_model(model=model,
+            mlflow.tensorflow.log_model(model,
                                         artifact_path="model",
                                         registered_model_name='test_model')
     except:

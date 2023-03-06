@@ -12,6 +12,7 @@ RUN apt update -y && apt install -y build-essential libpq-dev \
 
 CMD mlflow server \
   --backend-store-uri ${BACKEND_URI} \
-  #--default-artifact-root ${ARTIFACT_ROOT} \
+  --default-artifact-root ${ARTIFACT_ROOT} \
+  #--default-artifact-root mlflow-artifacts: \
   --serve-artifacts \
   --host 0.0.0.0
