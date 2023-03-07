@@ -30,4 +30,5 @@ Creates the different services:
 Simple tensorfow model to test logging on mlflow and minio
 
 ### still to do
+- check why all tables saved under db mlflow_user
 - script to create S3 bucket in minio for startup --> for now create manually before running a training
